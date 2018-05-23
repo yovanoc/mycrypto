@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js';
+
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
@@ -13,6 +15,7 @@ export function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/*
 export function isPrime(n: number): boolean {
   if (isNaN(n) || !isFinite(n) || n % 1 || n < 2) { return false; }
   const m = Math.sqrt(n);
@@ -27,15 +30,7 @@ export function* genPrime() {
     count++;
   }
 }
-export function gcd(n: number, m: number): number {
-  let r = 0;
-  while (n !== 0) {
-    r = m % n;
-    m = n;
-    n = r;
-  }
-  return m;
-}
+*/
 
 export function modInverse(a: number, b: number): number {
   a %= b;
@@ -44,4 +39,42 @@ export function modInverse(a: number, b: number): number {
       return x;
     }
   }
+}
+
+/*
+export function xgcd(a: number, b: number) {
+  if (b === 0) {
+    return [1, 0, a];
+  }
+
+  const temp = xgcd(b, a % b);
+  const x = temp[0];
+  const y = temp[1];
+  const d = temp[2];
+  return [y, x - y * Math.floor(a / b), d];
+}
+*/
+
+export function xgcd(a: BigNumber, b: BigNumber) {
+  if (b.eq(0)) {
+    return [1, 0, a];
+  }
+
+  const temp = xgcd(b, a.mod(b));
+  const x = temp[0];
+  const y = temp[1];
+  const d = temp[2];
+  return [y, new BigNumber(x).minus(a.div(b.toNumber()).integerValue().times(y)), d];
+}
+
+export function modInverseOpti(a: BigNumber, b: BigNumber): number {
+  return xgcd(a, b)[0];
+}
+
+export function gcd(a: number, b: number) {
+  if (!b) {
+    return a;
+  }
+
+  return gcd(b, a % b);
 }

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { gcd, modInverse } from './utils';
+import { gcd, modInverseOpti } from './utils';
 
 export default class RSA {
 
@@ -62,10 +62,6 @@ export default class RSA {
   }
 
   private generateD(): number {
-    let rnd: number;
-    do {
-      rnd = modInverse(this.e, this.phi.toNumber());
-    } while (rnd === this.e);
-    return rnd;
+    return modInverseOpti(new BigNumber(this.e), this.phi);
   }
 }
