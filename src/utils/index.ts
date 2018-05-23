@@ -55,7 +55,14 @@ export function xgcd(a: number, b: number) {
 }
 */
 
-export function xgcd(a: BigNumber, b: BigNumber) {
+export function xgcd(a: number | BigNumber, b: number | BigNumber) {
+  if (typeof a === "number") {
+    a = new BigNumber(a);
+  }
+  if (typeof b === "number") {
+    b = new BigNumber(b);
+  }
+
   if (b.eq(0)) {
     return [1, 0, a];
   }
@@ -64,7 +71,7 @@ export function xgcd(a: BigNumber, b: BigNumber) {
   const x = temp[0];
   const y = temp[1];
   const d = temp[2];
-  return [y, new BigNumber(x).minus(a.div(b.toNumber()).integerValue().times(y)), d];
+  return [y, new BigNumber(x).minus(((a.div(b.toNumber()).integerValue()).times(y))), d];
 }
 
 export function modInverseOpti(a: BigNumber, b: BigNumber): number {
