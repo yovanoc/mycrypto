@@ -38,6 +38,21 @@ export default class RSA {
     return new BigNumber(n).pow(this.d, this.modulus).toNumber();
   }
 
+  public encryptString(str: string): string {
+    let newStr = '';
+    for (let i = 0; i < str.length; i++) {
+      const n = str.charCodeAt(i);
+      const crypt = this.encrypt(n);
+      newStr += crypt.toString() + '-';
+    }
+    return newStr.slice(0, -1);
+  }
+
+  public decryptString(str: string): string {
+    const tmp = str.split('-').map((it) => this.decrypt(parseInt(it, 10)));
+    return String.fromCharCode(...tmp);
+  }
+
   private generateE(): number {
    let rnd = 1;
    do {
