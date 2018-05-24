@@ -1,5 +1,3 @@
-import { BigNumber } from 'bignumber.js';
-
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
@@ -31,52 +29,6 @@ export function* genPrime() {
   }
 }
 */
-
-export function modInverse(a: number, b: number): number {
-  a %= b;
-  for (let x = 1; x < b; x++) {
-    if ((a * x) % b === 1) {
-      return x;
-    }
-  }
-}
-
-/*
-export function xgcd(a: number, b: number) {
-  if (b === 0) {
-    return [1, 0, a];
-  }
-
-  const temp = xgcd(b, a % b);
-  const x = temp[0];
-  const y = temp[1];
-  const d = temp[2];
-  return [y, x - y * Math.floor(a / b), d];
-}
-*/
-
-export function xgcd(a: number | BigNumber, b: number | BigNumber) {
-  if (typeof a === "number") {
-    a = new BigNumber(a);
-  }
-  if (typeof b === "number") {
-    b = new BigNumber(b);
-  }
-
-  if (b.eq(0)) {
-    return [1, 0, a];
-  }
-
-  const temp = xgcd(b, a.mod(b));
-  const x = temp[0];
-  const y = temp[1];
-  const d = temp[2];
-  return [y, new BigNumber(x).minus(((a.div(b.toNumber()).integerValue()).times(y))), d];
-}
-
-export function modInverseOpti(a: BigNumber, b: BigNumber): number {
-  return xgcd(a, b)[0];
-}
 
 export function gcd(a: number, b: number) {
   if (!b) {

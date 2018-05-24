@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
-import { gcd, modInverseOpti } from './utils';
+import { gcd } from './utils';
+import { xgcdBigNumber } from './utils/xgcd';
 
 export default class RSA {
 
@@ -62,6 +63,6 @@ export default class RSA {
   }
 
   private generateD(): number {
-    return modInverseOpti(new BigNumber(this.e), this.phi);
+    return xgcdBigNumber(new BigNumber(this.e), this.phi)[1].toNumber();
   }
 }

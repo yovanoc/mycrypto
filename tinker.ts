@@ -14,6 +14,7 @@ while (1) {
 import { RSA } from './src';
 
 console.time('RSA');
+// const rsa = new RSA(3, 11);
 const rsa = new RSA(105761, 105389);
 // const rsa = new RSA(157, 41);
 console.timeEnd('RSA');
@@ -45,6 +46,13 @@ console.log(isPrime(67280421310721));
 console.timeEnd('Classic');
 */
 
-import { xgcd } from "./src/utils"
+/*
+import { xgcd, xgcdBigNumber } from "./src/utils/xgcd"
+import BigNumber from 'bignumber.js';
 
+console.log(xgcd(3, 20)) // 7
 console.log(xgcd(7, 6240)) // 1783
+
+console.log(xgcdBigNumber(new BigNumber(3), new BigNumber(20))) // 7
+console.log(xgcdBigNumber(new BigNumber(7), new BigNumber(6240))) // 1783
+*/
