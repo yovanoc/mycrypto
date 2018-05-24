@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { gcd } from './utils';
+import { gcd, generatePrime } from './utils';
 import { xgcdBigNumber } from './utils/xgcd';
 
 export default class RSA {
@@ -11,12 +11,18 @@ export default class RSA {
   private e: number;
   private d: number;
 
-  constructor(p: number, q: number) {
-    this.p = new BigNumber(p);
-    this.q = new BigNumber(q);
+  constructor(p?: number, q?: number) {
+    if (!p && !q) {
+      this.p = generatePrime(2);
+      this.q = generatePrime(2);
+    } else {
+      this.p = new BigNumber(p);
+      this.q = new BigNumber(q);
+    }
     this.modulus = this.p.times(this.q);
     this.phi = new BigNumber(p - 1).times(q - 1);
     this.e = this.generateE();
+    console.log(this.toString());
     this.d = this.generateD();
   }
 
@@ -55,7 +61,7 @@ export default class RSA {
   }
 
   private generateE(): number {
-   let rnd = 1;
+   let rnd = 2;
    do {
      rnd++;
    } while (gcd(rnd, this.phi.toNumber()) !== 1);

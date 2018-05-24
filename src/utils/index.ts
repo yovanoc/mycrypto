@@ -1,3 +1,6 @@
+import { BigNumber } from 'bignumber.js';
+import { probablyPrime } from './mr';
+
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
@@ -13,7 +16,20 @@ export function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/*
+export function getRandomIntBigNumber(min: number | BigNumber, max: number | BigNumber): BigNumber {
+  if (typeof min === 'number') {
+    min = new BigNumber(min);
+  }
+  if (typeof max === 'number') {
+    max = new BigNumber(max);
+  }
+  if (!min.isInteger() || !max.isInteger()) {
+    throw new Error('min and max must be integers.');
+  }
+  const tmp = max.minus(min).plus(1);
+  return BigNumber.random().times(tmp).integerValue().plus(min);
+}
+
 export function isPrime(n: number): boolean {
   if (isNaN(n) || !isFinite(n) || n % 1 || n < 2) { return false; }
   const m = Math.sqrt(n);
@@ -28,7 +44,6 @@ export function* genPrime() {
     count++;
   }
 }
-*/
 
 export function gcd(a: number, b: number) {
   if (!b) {
@@ -36,4 +51,18 @@ export function gcd(a: number, b: number) {
   }
 
   return gcd(b, a % b);
+}
+
+export function generatePrime(digits: number): BigNumber {
+  const min = new BigNumber('1' + '0'.repeat(digits - 1));
+  const max = new BigNumber('9'.repeat(digits));
+  let tmp: BigNumber = getRandomIntBigNumber(min, max);
+  while (!probablyPrime(tmp)) {
+    // console.log(tmp.toNumber());
+    tmp = tmp.plus(1);
+    if (tmp.gte(max)) {
+      throw new Error(`We can't go over ${max.toNumber()}`);
+    }
+  }
+  return tmp;
 }

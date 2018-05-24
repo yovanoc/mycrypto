@@ -15,12 +15,13 @@ import { RSA } from './src';
 
 console.time('RSA');
 // const rsa = new RSA(3, 11);
-const rsa = new RSA(105761, 105389);
+// const rsa = new RSA(105761, 105389);
 // const rsa = new RSA(157, 41);
+const rsa = new RSA();
 console.timeEnd('RSA');
 console.log(rsa.toString());
 
-const n = 2112;
+const n = 18;
 console.log('Number', n);
 const c = rsa.encrypt(n);
 console.log('Crypted', c);
@@ -36,6 +37,7 @@ console.log('Original', newMessage);
 
 /*
 import { probablyPrime } from './src/utils/mr';
+import { isPrime } from './src/utils';
 
 console.time('MR');
 console.log(probablyPrime(67280421310721));
@@ -52,7 +54,17 @@ import BigNumber from 'bignumber.js';
 
 console.log(xgcd(3, 20)) // 7
 console.log(xgcd(7, 6240)) // 1783
+console.log(xgcd(3, 11145834880)) // -3715278293
 
 console.log(xgcdBigNumber(new BigNumber(3), new BigNumber(20))) // 7
 console.log(xgcdBigNumber(new BigNumber(7), new BigNumber(6240))) // 1783
+console.log(xgcdBigNumber(new BigNumber(3), new BigNumber(11145834880))) // -3715278293
+*/
+
+/*
+import { generatePrime } from './src/utils';
+
+console.time('GenPrime');
+console.log(generatePrime(8).toNumber());
+console.timeEnd('GenPrime');
 */
