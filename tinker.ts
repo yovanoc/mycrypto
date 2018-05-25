@@ -14,10 +14,8 @@ while (1) {
 import { RSA } from './src';
 
 console.time('RSA');
-// const rsa = new RSA(3, 11);
-// const rsa = new RSA(105761, 105389);
-// const rsa = new RSA(157, 41);
-const rsa = new RSA();
+const rsa = new RSA(16);
+// const rsa = new RSA();
 console.timeEnd('RSA');
 console.log(rsa.toString());
 

@@ -70,7 +70,6 @@ export function xgcdBigNumber(a: BigNumber, b: BigNumber): BigNumber[] {
   }
 
   while (!b.isZero()) {
-    // q = a.div(b).integerValue(BigNumber.ROUND_FLOOR);
     q = a.idiv(b);
     r = a.mod(b);
 

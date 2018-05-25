@@ -11,18 +11,17 @@ export default class RSA {
   private e: number;
   private d: number;
 
-  constructor(p?: number, q?: number) {
-    if (!p && !q) {
-      this.p = generatePrime(2);
-      this.q = generatePrime(2);
+  constructor(bits?: number) {
+    if (!bits) {
+      this.p = generatePrime(4);
+      this.q = generatePrime(4);
     } else {
-      this.p = new BigNumber(p);
-      this.q = new BigNumber(q);
+      this.p = generatePrime(bits / 2);
+      this.q = generatePrime(bits / 2);
     }
     this.modulus = this.p.times(this.q);
-    this.phi = new BigNumber(p - 1).times(q - 1);
+    this.phi = this.p.minus(1).times(this.q.minus(1));
     this.e = this.generateE();
-    console.log(this.toString());
     this.d = this.generateD();
   }
 
@@ -35,6 +34,14 @@ export default class RSA {
       E: ${this.e}
       D: ${this.d}
     `;
+  }
+
+  public get publicKey() {
+    return 42;
+  }
+
+  public get privateKey() {
+    return 42;
   }
 
   public encrypt(n: number): number {
@@ -69,6 +76,7 @@ export default class RSA {
   }
 
   private generateD(): number {
-    return xgcdBigNumber(new BigNumber(this.e), this.phi)[1].toNumber();
+    const tmp = xgcdBigNumber(new BigNumber(this.e), this.phi)[1];
+    return tmp.isNegative() ? tmp.plus(this.phi).toNumber() : tmp.toNumber();
   }
 }
