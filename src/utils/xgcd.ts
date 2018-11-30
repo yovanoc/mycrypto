@@ -1,20 +1,11 @@
-import { BigNumber } from 'bignumber.js';
-
-/**
- * Calculate xgcd for two numbers
- * @param {number} a
- * @param {number} b
- * @return {number} result
- * @private
- */
-export function xgcd(a: number, b: number): number[] {
-  let t: number; // used to swap two variables
-  let q: number; // quotient
-  let r: number; // remainder
-  let x = 0;
-  let lastx = 1;
-  let y = 1;
-  let lasty = 0;
+export function xgcd(a: bigint, b: bigint): BigInt64Array {
+  let t: bigint; // used to swap two variables
+  let q: bigint; // quotient
+  let r: bigint; // remainder
+  let x = 0n;
+  let lastx = 1n;
+  let y = 1n;
+  let lasty = 0n;
 
   /*
   if (!isInteger(a) || !isInteger(b)) {
@@ -23,7 +14,9 @@ export function xgcd(a: number, b: number): number[] {
   */
 
   while (b) {
-    q = Math.floor(a / b);
+    q = a / b;
+    // tslint:disable-next-line:no-console
+    console.log(q);
     r = a - q * b;
 
     t = x;
@@ -38,58 +31,11 @@ export function xgcd(a: number, b: number): number[] {
     b = r;
   }
 
-  let res: number[];
+  let res = new BigInt64Array(3);
   if (a < 0) {
-    res = [-a, -lastx, -lasty];
+    res.set([-a, -lastx, -lasty]);
   } else {
-    res = [a, a ? lastx : 0, lasty];
-  }
-  return res;
-}
-
-/**
- * Calculate xgcd for two BigNumbers
- * @param {BigNumber} a
- * @param {BigNumber} b
- * @return {BigNumber[]} result
- * @private
- */
-export function xgcdBigNumber(a: BigNumber, b: BigNumber): BigNumber[] {
-  let t: BigNumber; // used to swap two variables
-  let q: BigNumber; // quotient
-  let r: BigNumber; // remainder
-  const zero = new BigNumber(0);
-  const one = new BigNumber(1);
-  let x = zero;
-  let lastx = one;
-  let y = one;
-  let lasty = zero;
-
-  if (!a.isInteger() || !b.isInteger()) {
-    throw new Error('Parameters in function xgcd must be integer numbers');
-  }
-
-  while (!b.isZero()) {
-    q = a.idiv(b);
-    r = a.mod(b);
-
-    t = x;
-    x = lastx.minus(q.times(x));
-    lastx = t;
-
-    t = y;
-    y = lasty.minus(q.times(y));
-    lasty = t;
-
-    a = b;
-    b = r;
-  }
-
-  let res: BigNumber[];
-  if (a.lt(zero)) {
-    res = [a.negated(), lastx.negated(), lasty.negated()];
-  } else {
-    res = [a, !a.isZero() ? lastx : zero, lasty];
+    res.set([a, a ? lastx : 0n, lasty]);
   }
   return res;
 }

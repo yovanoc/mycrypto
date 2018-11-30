@@ -1,15 +1,14 @@
-import { BigNumber } from 'bignumber.js';
+import { xgcd } from 'utils/xgcd';
 import { gcd, generatePrime } from './utils';
-import { xgcdBigNumber } from './utils/xgcd';
 
 export default class RSA {
 
-  private p: BigNumber;
-  private q: BigNumber;
-  private modulus: BigNumber;
-  private phi: BigNumber;
-  private e: number;
-  private d: number;
+  private p: bigint;
+  private q: bigint;
+  private modulus: bigint;
+  private phi: bigint;
+  private e: bigint;
+  private d: bigint;
 
   constructor(bits?: number) {
     if (!bits) {
@@ -19,18 +18,18 @@ export default class RSA {
       this.p = generatePrime(bits / 2);
       this.q = generatePrime(bits / 2);
     }
-    this.modulus = this.p.times(this.q);
-    this.phi = this.p.minus(1).times(this.q.minus(1));
+    this.modulus = this.p * this.q;
+    this.phi = (this.p - 1n) * (this.q - 1n);
     this.e = this.generateE();
     this.d = this.generateD();
   }
 
   public toString(): string {
     return `RSA:
-      P: ${this.p.toNumber()}
-      Q: ${this.q.toNumber()}
-      Modulus: ${this.modulus.toNumber()}
-      Phi: ${this.phi.toNumber()}
+      P: ${this.p}
+      Q: ${this.q}
+      Modulus: ${this.modulus}
+      Phi: ${this.phi}
       E: ${this.e}
       D: ${this.d}
     `;
@@ -45,11 +44,11 @@ export default class RSA {
   }
 
   public encrypt(n: number): number {
-    return new BigNumber(n).pow(this.e, this.modulus).toNumber();
+    return BigInt(n).pow(this.e, this.modulus).toNumber();
   }
 
   public decrypt(n: number): number {
-    return new BigNumber(n).pow(this.d, this.modulus).toNumber();
+    return BigInt(n).pow(this.d, this.modulus).toNumber();
   }
 
   public encryptString(str: string): string {
@@ -67,16 +66,16 @@ export default class RSA {
     return String.fromCharCode(...tmp);
   }
 
-  private generateE(): number {
-   let rnd = 2;
+  private generateE(): bigint {
+   let rnd = 2n;
    do {
      rnd++;
-   } while (gcd(rnd, this.phi.toNumber()) !== 1);
+   } while (gcd(rnd, this.phi) !== 1n);
    return rnd;
   }
 
-  private generateD(): number {
-    const tmp = xgcdBigNumber(new BigNumber(this.e), this.phi)[1];
-    return tmp.isNegative() ? tmp.plus(this.phi).toNumber() : tmp.toNumber();
+  private generateD(): bigint {
+    const tmp = xgcd(BigInt(this.e), this.phi)[1];
+    return tmp < 0n ? tmp + this.phi : tmp;
   }
 }

@@ -1,33 +1,27 @@
-import { BigNumber } from 'bignumber.js';
 import { probablyPrime } from './mr';
 
-/**
- * Returns a random number between min (inclusive) and max (exclusive)
- */
-export function getRandomArbitrary(min: number, max: number) {
-  return Math.random() * (max - min) + min;
+export function getRandomInt(min: bigint, max: bigint) {
+  return BigInt(Math.random()) * (max - min + 1n) + min;
 }
 
-/**
- * Returns a random integer between min (inclusive) and max (inclusive)
- * Using Math.round() will give you a non-uniform distribution!
- */
-export function getRandomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+export function expmod(a: bigint, b: bigint, n: bigint) {
+  a = a % n;
+  let result = 1n;
+  let x = a;
 
-export function getRandomIntBigNumber(min: number | BigNumber, max: number | BigNumber): BigNumber {
-  if (typeof min === 'number') {
-    min = new BigNumber(min);
+  while (b > 0) {
+    let leastSignificantBit = b % 2n;
+    b = b / 2n;
+
+    if (leastSignificantBit === 1n) {
+      result = result * x;
+      result = result % n;
+    }
+
+    x = x * x;
+    x = x % n;
   }
-  if (typeof max === 'number') {
-    max = new BigNumber(max);
-  }
-  if (!min.isInteger() || !max.isInteger()) {
-    throw new Error('min and max must be integers.');
-  }
-  const tmp = max.minus(min).plus(1);
-  return BigNumber.random().times(tmp).integerValue().plus(min);
+  return result;
 }
 
 export function isPrime(n: number): boolean {
@@ -45,7 +39,7 @@ export function* genPrime() {
   }
 }
 
-export function gcd(a: number, b: number) {
+export function gcd(a: bigint, b: bigint): bigint {
   if (!b) {
     return a;
   }
@@ -53,15 +47,15 @@ export function gcd(a: number, b: number) {
   return gcd(b, a % b);
 }
 
-export function generatePrime(digits: number): BigNumber {
-  const min = new BigNumber('1' + '0'.repeat(digits - 1));
-  const max = new BigNumber('9'.repeat(digits));
-  let tmp: BigNumber = getRandomIntBigNumber(min, max);
+export function generatePrime(digits: number): bigint {
+  const min = BigInt('1' + '0'.repeat(digits - 1));
+  const max = BigInt('9'.repeat(digits));
+  let tmp: bigint = getRandomInt(min, max);
   while (!probablyPrime(tmp)) {
     // console.log(tmp.toNumber());
-    tmp = tmp.plus(1);
-    if (tmp.gte(max)) {
-      throw new Error(`We can't go over ${max.toNumber()}`);
+    tmp = tmp + 1n;
+    if (tmp >= max) {
+      throw new Error(`We can't go over ${max}`);
     }
   }
   return tmp;

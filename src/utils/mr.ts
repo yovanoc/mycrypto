@@ -1,22 +1,20 @@
-import { BigNumber } from 'bignumber.js';
-
-export function probablyPrime(n: number | BigNumber, k = 10): boolean {
+export function probablyPrime(n: number | bigint, k = 10): boolean {
   if (typeof n === 'number') {
-    n = new BigNumber(n);
+    n = BigInt(n);
   }
 
-  if (n.eq(2) || n.eq(3)) {
+  if (n === 2n || n === 3n) {
     return true;
   }
-  if (n.mod(2).eq(0) || n.lt(2)) {
+  if (n % 2n === 0n || n < 2n) {
     return false;
   }
 
   // Write (n - 1) as 2^s * d
   let s = 0;
-  let d = n.minus(1);
-  while (d.mod(2).eq(0)) {
-    d = d.dividedBy(2);
+  let d = n - 1n;
+  while (d % 2n === 0n) {
+    d = d / 2n;
     ++s;
   }
 
@@ -24,16 +22,16 @@ export function probablyPrime(n: number | BigNumber, k = 10): boolean {
     // A base between 2 and n - 2
     let x = BigNumber.random().times(n.minus(3)).integerValue().plus(2).pow(d.toNumber(), n);
 
-    if (x.eq(1) || x.eq(n.minus(1))) {
+    if (x.eq(1) || x.eq(n - 1n)) {
       continue;
     }
 
-    for (let i = s - 1; i--;) {
+    for (let i = s - 1; i--; ) {
       x = x.pow(2, n);
       if (x.eq(1)) {
         return false;
       }
-      if (x.eq(n.minus(1))) {
+      if (x.eq(n - 1n)) {
         continue WitnessLoop;
       }
     }
